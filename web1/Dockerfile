@@ -2,6 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-container
 WORKDIR /src
+ 
 
 WORKDIR "/src/."
 COPY ["dotnetcore/dotnetcore.csproj", "dotnetcore/"]
@@ -16,8 +17,12 @@ EXPOSE 3000
 ENV ASPNETCORE_URLS=http://+:3000
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+RUN groupadd -r devsecops && useradd --no-log-init -r -g devsecops devsecops 
 WORKDIR /app
+RUN chown -R /app
 COPY --from=build-container /app/publish .
 EXPOSE 3000
 ENV ASPNETCORE_URLS=http://+:3000
+USER devsecops
 CMD ["dotnet", "dotnetcore.dll"]
