@@ -18,11 +18,13 @@ ENV ASPNETCORE_URLS=http://+:3000
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
-RUN groupadd -r devsecops && useradd --no-log-init -r -g devsecops devsecops 
+
+RUN addgroup --gid 1000 -S app && adduser --uid 1000 -S app -G app
+
 WORKDIR /app
-RUN chown -R /app
+RUN chown -R app:app /home/app/net
 COPY --from=build-container /app/publish .
 EXPOSE 3000
 ENV ASPNETCORE_URLS=http://+:3000
-USER devsecops
+USER app
 CMD ["dotnet", "dotnetcore.dll"]
