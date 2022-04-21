@@ -18,13 +18,15 @@ ENV ASPNETCORE_URLS=http://+:3000
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
+RUN adduser --disabled-password \
+  --home /app \
+  --gecos '' dotnetuser && chown -R dotnetuser /app
 
-RUN addgroup --gid 1000 -S app && adduser --uid 1000 -S app -G app
+# impersonate into the new user
+USER dotnetuser
 
-WORKDIR /app
-RUN chown -R app:app /home/app/net
+WORKDIR /app 
 COPY --from=build-container /app/publish .
 EXPOSE 3000
-ENV ASPNETCORE_URLS=http://+:3000
-USER app
+ENV ASPNETCORE_URLS=http://+:3000 
 CMD ["dotnet", "dotnetcore.dll"]
