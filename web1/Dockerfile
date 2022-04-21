@@ -4,14 +4,14 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-container
 WORKDIR /src
 
 WORKDIR "/src/."
-COPY ["web1.csproj/web1.csproj.csproj", "web1.csproj/"]
-RUN dotnet restore "web1.csproj/web1.csproj.csproj"
+COPY ["web1/web1.csproj", "web1/"]
+RUN dotnet restore "web1/web1.csproj"
 COPY . .
 
-RUN dotnet build "web1.csproj/web1.csproj.csproj" -c Release -o /app/build
+RUN dotnet build "web1/web1.csproj" -c Release -o /app/build
 
 #FROM build AS publish
-RUN dotnet publish "web1.csproj/web1.csproj.csproj" -c Release -o /app/publish
+RUN dotnet publish "web1/web1.csproj" -c Release -o /app/publish
 EXPOSE 3000
 ENV ASPNETCORE_URLS=http://+:3000
 
@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=build-container /app/publish .
 EXPOSE 3000
 ENV ASPNETCORE_URLS=http://+:3000
-CMD ["dotnet", "web1.csproj.dll"]
+CMD ["dotnet", "web1.dll"]
