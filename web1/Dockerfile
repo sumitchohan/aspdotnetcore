@@ -4,14 +4,14 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-container
 WORKDIR /src
 
 WORKDIR "/src/."
-COPY ["MvcMovie/MvcMovie.csproj", "MvcMovie/"]
-RUN dotnet restore "MvcMovie/MvcMovie.csproj"
+COPY ["dotnetcore/dotnetcore.csproj", "dotnetcore/"]
+RUN dotnet restore "dotnetcore/dotnetcore.csproj"
 COPY . .
 
-RUN dotnet build "MvcMovie/MvcMovie.csproj" -c Release -o /app/build
+RUN dotnet build "dotnetcore/dotnetcore.csproj" -c Release -o /app/build
 
 #FROM build AS publish
-RUN dotnet publish "MvcMovie/MvcMovie.csproj" -c Release -o /app/publish
+RUN dotnet publish "dotnetcore/dotnetcore.csproj" -c Release -o /app/publish
 EXPOSE 3000
 ENV ASPNETCORE_URLS=http://+:3000
 
@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=build-container /app/publish .
 EXPOSE 3000
 ENV ASPNETCORE_URLS=http://+:3000
-CMD ["dotnet", "MvcMovie.dll"]
+CMD ["dotnet", "dotnetcore.dll"]
